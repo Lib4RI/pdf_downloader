@@ -44,6 +44,10 @@ class PdfDownloader{
         return $this->pdf_url;
     }
     
+    public function setPdfName(){
+        
+    }
+    
     private function getFromMetaCitationPdfUrl(){
         $tags = $dom->getElementsByTagName('meta');
         foreach( $tags as $tag ) {
