@@ -7,9 +7,10 @@ class PdfDownloader{
     private $html;
     private $pdf_url;
     private $doi_resolver = 'http://dx.doi.org/';
+    private $locators = ['locateFromMetaCitationPdfUrl', 'locateFromJsonElsevier'];
     
     public function __construct(){
-        $dom = new DOMDocument();
+        $this->dom = new DOMDocument();
     }
     
     public function setDoi($doi){
@@ -22,12 +23,13 @@ class PdfDownloader{
         return $this;
     }
 
-    public function getDoiResolver($doi_resolver){
-        return $this->$doi_resolver;
+    public function getDoiResolver(){
+        return $this->doi_resolver;
     }
     
     public function fetchHtml(){
-        $this->html = file_get_contents($this->doi_resolver.$this->doi);
+        $this->html = file_get_contents($this->getDoiResolver().$this->doi);
+        $this->dom->loadHTML($this->html);
         return $this;
     }
     
@@ -37,6 +39,11 @@ class PdfDownloader{
     
     public function locatePdfUrl(){
         
+        foreach ($this->locators as $locator){
+            if ($this->{$locator}()){
+                break;
+            }
+        }
         return $this;
     }
     
@@ -45,11 +52,11 @@ class PdfDownloader{
     }
     
     public function setPdfName(){
-        
+
     }
     
-    private function getFromMetaCitationPdfUrl(){
-        $tags = $dom->getElementsByTagName('meta');
+    private function locateFromMetaCitationPdfUrl(){
+        $tags = $this->dom->getElementsByTagName('meta');
         foreach( $tags as $tag ) {
             if ($tag->getAttribute('name') == 'citation_pdf_url'){
                 $this->pdf_url = $tag->getAttribute('content');
@@ -59,8 +66,8 @@ class PdfDownloader{
         return false;
     }
     
-    private function getFromJsonElsevier(){
-        $tags = $dom->getElementsByTagName('script');
+    private function locateFromJsonElsevier(){
+        $tags = $this->dom->getElementsByTagName('script');
         foreach( $tags as $tag ) {
             if (($tag->getAttribute('type') == 'application/json') && ($tag->getAttribute('data-iso-key') == '_0')){
                 $data = json_decode($tag->nodeValue);
