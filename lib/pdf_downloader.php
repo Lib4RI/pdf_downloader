@@ -7,7 +7,7 @@ class PdfDownloader{
     private $html;
     private $pdf_url;
     private $doi_resolver = 'http://dx.doi.org/';
-    private $locators = ['locateFromMetaCitationPdfUrl', 'locateFromJsonElsevier'];
+    private $locators = ['locateFromAps', 'locateFromMetaCitationPdfUrl', 'locateFromJsonElsevier'];
     private $pdf;
     
     public function __construct(){
@@ -122,6 +122,20 @@ class PdfDownloader{
         return false;
     }
     
+    private function locateFromAps(){
+        $tags = $this->dom->getElementsByTagName('a');
+        foreach( $tags as $tag ) {
+            if ($tag->getAttribute('class') == 'small button'){
+                $this->pdf_url = 'https://journals.aps.org'.$tag->getAttribute('href');
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private function locateFromAcs(){
+        
+    }
     //convenient function
     public function returnPdf($doi){
         return $this->setDoi($doi)->fetchHtml()->locatePdfUrl()->fetchPdf()->getPdf();
