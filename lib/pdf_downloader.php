@@ -5,13 +5,14 @@ class PdfDownloader{
     private $dom;
     private $doi;
     private $html;
+    private $url;
     private $pdf_url;
     private $doi_resolver = 'http://dx.doi.org/';
-    private $locators = ['locateFromAps', 'locateFromMetaCitationPdfUrl', 'locateFromJsonElsevier'];
+    private $locator;
     private $pdf;
     
     public function __construct(){
-        $this->dom = new DOMDocument();
+        $this->dom = new DOMDocument('1.0', 'iso-8859-1');
     }
     
     public function setDoi($doi){
@@ -30,7 +31,22 @@ class PdfDownloader{
     
     public function fetchHtml(){
         $url = $this->getDoiResolver().$this->doi;
-        $this->html = file_get_contents($url);
+        $ch = curl_init($url);
+        $agent = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.0.3705; .NET CLR 1.1.4322)';
+        
+        curl_setopt ($ch, CURLOPT_COOKIEJAR, $ckfile);
+        curl_setopt ($ch, CURLOPT_COOKIEFILE, $ckfile);
+        //Tell cURL to return the output as a string.
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        //Tell cURL that it should follow any redirects.
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        //Execute the cURL request and return the output to a string.
+        curl_setopt($ch, CURLOPT_USERAGENT, $agent);
+        
+        $this->html = curl_exec($ch);
+        $this->url = curl_getinfo ($ch,  CURLINFO_EFFECTIVE_URL ); 
+        curl_close($ch);
         $this->dom->loadHTML($this->html);
         return $this;
     }
@@ -39,30 +55,71 @@ class PdfDownloader{
         return $this->html;
     }
     
+    public function getUrl(){
+        return $this->url;
+    }
+
     public function locatePdfUrl(){
-        
-        foreach ($this->locators as $locator){
-            if ($this->{$locator}()){
-                break;
-            }
+        if (strpos($this->getUrl(), 'elsevier.com') !== false )
+        {
+            $this->locator = 'locateElsevier';   
         }
+
+        if (strpos($this->getUrl(), 'wiley.com') !== false )
+        {
+            $this->locator = 'locateWiley';
+        }
+        
+        elseif (strpos($this->getUrl(), 'aps.org') !== false )
+        {
+            $this->locator = 'locateAps';
+        }
+        
+        elseif (strpos($this->getUrl(), 'acs.org') !== false )
+        {
+            $this->locator = 'locateAcs';
+        }
+        
+        else{
+            $this->locator = 'locateMetaCitationPdfUrl';
+        }
+        
+        $this->{$this->locator}();
+        
         return $this;
     }
-    
+        
     public function getPdfUrl(){
         return $this->pdf_url;
     }
             
     public function fetchPdf(){
-        $this->pdf = file_get_contents($this->pdf_url);
+        $ch = curl_init($this->pdf_url);
+        $agent = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.0.3705; .NET CLR 1.1.4322)';
+        
+        curl_setopt ($ch, CURLOPT_COOKIEJAR, $ckfilep);
+        curl_setopt ($ch, CURLOPT_COOKIEFILE, $ckfilep);
+        //Tell cURL to return the output as a string.
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        //Tell cURL that it should follow any redirects.
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        //Execute the cURL request and return the output to a string.
+        curl_setopt($ch, CURLOPT_USERAGENT, $agent);
+        
+        $this->pdf = curl_exec($ch);
+//        $this->url = curl_getinfo ($ch,  CURLINFO_EFFECTIVE_URL );
+        curl_close($ch);
+  
         return $this;
     }
+    
     
     public function getPdf(){
         return $this->pdf;
     }
     
-    private function locateFromMetaCitationPdfUrl(){
+    private function locateMetaCitationPdfUrl(){
         $tags = $this->dom->getElementsByTagName('meta');
         foreach( $tags as $tag ) {
             if ($tag->getAttribute('name') == 'citation_pdf_url'){
@@ -73,7 +130,15 @@ class PdfDownloader{
         return false;
     }
     
-    private function locateFromJsonElsevier(){
+    private function locateWiley(){
+        if ($this->locateMetaCitationPdfUrl()){
+            $this->pdf_url = str_replace('doi/pdf', 'doi/pdfdirect', $this->getPdfUrl());
+            return true;
+        }
+        return false;
+    }
+    
+    private function locateElsevier(){
         $else_dom = new DOMDocument();
         $found = false;
         // step 1 
@@ -122,7 +187,7 @@ class PdfDownloader{
         return false;
     }
     
-    private function locateFromAps(){
+    private function locateAps(){
         $tags = $this->dom->getElementsByTagName('a');
         foreach( $tags as $tag ) {
             if ($tag->getAttribute('class') == 'small button'){
@@ -133,8 +198,15 @@ class PdfDownloader{
         return false;
     }
     
-    private function locateFromAcs(){
-        
+    private function locateAcs(){
+        $tags = $this->dom->getElementsByTagName('a');
+        foreach( $tags as $tag ) {
+            if ($tag->getAttribute('title') == 'PDF'){
+                $this->pdf_url = 'https://pubs.acs.org'.$tag->getAttribute('href');
+                return true;
+            }
+        }
+        return false;
     }
     //convenient function
     public function returnPdf($doi){

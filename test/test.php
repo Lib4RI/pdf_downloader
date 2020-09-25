@@ -23,5 +23,5 @@ $down->setDoi($doi)->fetchHtml()->locatePdfUrl();
 
 
 $down->fetchPdf();
-//echo $down->getPdf();
+echo $down->getPdfUrl();
 file_put_contents($pdf_fname, $down->getPdf());
