@@ -84,7 +84,7 @@ class PdfDownloader{
             $this->locator = 'locateMetaCitationPdfUrl';
         }
         
-        $this->{$this->locator}();
+        $this->pdf_url = $this->{$this->locator}();
         
         return $this;
     }
@@ -131,9 +131,9 @@ class PdfDownloader{
     }
     
     private function locateWiley(){
-        if ($this->locateMetaCitationPdfUrl()){
-            $this->pdf_url = str_replace('doi/pdf', 'doi/pdfdirect', $this->getPdfUrl());
-            return true;
+        $turl = $this->locateMetaCitationPdfUrl();
+        if ($turl){
+            return str_replace('doi/pdf', 'doi/pdfdirect', $this->getPdfUrl());
         }
         return false;
     }
@@ -180,8 +180,7 @@ class PdfDownloader{
         $tags = $else_dom->getElementsByTagName('div');
         foreach( $tags as $tag ) {
             if (($tag->getAttribute('id') == 'redirect-message')){
-                $this->pdf_url = $tag->getElementsByTagName('a')->item(0)->getAttribute('href');
-                return true;
+                return $tag->getElementsByTagName('a')->item(0)->getAttribute('href');
             }
         }
         return false;
@@ -191,8 +190,7 @@ class PdfDownloader{
         $tags = $this->dom->getElementsByTagName('a');
         foreach( $tags as $tag ) {
             if ($tag->getAttribute('class') == 'small button'){
-                $this->pdf_url = 'https://journals.aps.org'.$tag->getAttribute('href');
-                return true;
+                return 'https://journals.aps.org'.$tag->getAttribute('href');
             }
         }
         return false;
@@ -202,8 +200,7 @@ class PdfDownloader{
         $tags = $this->dom->getElementsByTagName('a');
         foreach( $tags as $tag ) {
             if ($tag->getAttribute('title') == 'PDF'){
-                $this->pdf_url = 'https://pubs.acs.org'.$tag->getAttribute('href');
-                return true;
+                return 'https://pubs.acs.org'.$tag->getAttribute('href');
             }
         }
         return false;
