@@ -121,7 +121,7 @@ class PdfDownloader{
         curl_close($ch);
   
         if(preg_match("/^%PDF-/", $this->pdf)){
-            
+            // DO NOTHING
         }else{
             $this->pdf = false;
         }
