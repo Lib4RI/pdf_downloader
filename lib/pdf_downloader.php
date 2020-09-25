@@ -120,6 +120,12 @@ class PdfDownloader{
 //        $this->url = curl_getinfo ($ch,  CURLINFO_EFFECTIVE_URL );
         curl_close($ch);
   
+        if(preg_match("/^%PDF-/", $this->pdf)){
+            
+        }else{
+            $this->pdf = false;
+        }
+        
         return $this;
     }
     
