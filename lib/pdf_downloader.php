@@ -123,8 +123,7 @@ class PdfDownloader{
         $tags = $this->dom->getElementsByTagName('meta');
         foreach( $tags as $tag ) {
             if ($tag->getAttribute('name') == 'citation_pdf_url'){
-                $this->pdf_url = $tag->getAttribute('content');
-                return true;
+                return $tag->getAttribute('content');
             }
         }
         return false;
