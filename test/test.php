@@ -21,10 +21,11 @@ $down = new PdfDownloader();
 
 $down->setDoi($doi)->fetchHtml()->locatePdfUrl();
 
+$down->fetchPdf();
+file_put_contents($pdf_fname, $down->getPdf());
+
+
 //echo $down->getHtml();
 
 // echo $down->getUrl();
-// echo $down->getPdfUrl();
-
-$down->fetchPdf();
-file_put_contents($pdf_fname, $down->getPdf());
+ echo $down->getPdfUrl();

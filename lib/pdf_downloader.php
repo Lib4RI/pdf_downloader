@@ -80,6 +80,11 @@ class PdfDownloader{
             $this->locator = 'locateAcs';
         }
         
+        elseif (strpos($this->getUrl(), 'tandfonline.com') !== false )
+        {
+            $this->locator = 'locateTaylorFrancis';
+        }
+        
         else{
             $this->locator = 'locateMetaCitationPdfUrl';
         }
@@ -137,6 +142,16 @@ class PdfDownloader{
         $turl = $this->locateMetaCitationPdfUrl();
         if ($turl){
             return str_replace('doi/pdf', 'doi/pdfdirect', $this->getPdfUrl());
+        }
+        return false;
+    }
+    
+    private function locateTaylorFrancis(){
+        $tags = $this->dom->getElementsByTagName('a');
+        foreach( $tags as $tag ) {
+            if ($tag->getAttribute('class') == 'show-pdf'){
+                return 'https://www.tandfonline.com'.$tag->getAttribute('href');
+            }
         }
         return false;
     }
