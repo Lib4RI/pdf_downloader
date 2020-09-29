@@ -1,3 +1,35 @@
 <?php
 
 
+/**
+ * Implements hook_menu().
+ */
+function pdf_downloader_menu() {
+    $items = array();
+    $items['islandora/pdfdloader/dload'] = array(
+        'page callback' => 'pdf_downloader_dload_pdf',
+        'access arguments' => array('access publication alert links'),
+        'type' => MENU_CALLBACK,
+    );
+    
+    return $items;
+}
+
+
+
+function pdf_downloader_dload_pdf(/*$doi*/){
+    $doi = '10.1088/1748-0221/15/03/P03014';
+    
+    module_load_include('php', 'pdf_downloader', 'lib/pdf_downloader');
+    $pdf_fname = 'test.pdf';
+    
+    $down = new PdfDownloader();    
+    $pdf = $down->returnPdf($doi);
+    if ($pdf == false){
+        echo 'PDF not fetched';
+    }
+    else{
+        file_put_contents('/var/www/html/sites/default/files/pdfdloader/'.$pdf_fname, $down->getPdf());
+    }
+    
+}
