@@ -17,19 +17,24 @@ function pdf_downloader_menu() {
 
 
 
-function pdf_downloader_dload_pdf(/*$doi*/){
-    $doi = '10.1088/1748-0221/15/03/P03014';
+function pdf_downloader_dload_pdf($doi = NULL){
+    if (!$doi){
+        $doi = trim($_GET['DOI'],'_');
+    }
     
     module_load_include('php', 'pdf_downloader', 'lib/pdf_downloader');
-    $pdf_fname = 'test.pdf';
     
-    $down = new PdfDownloader();    
+    $down = new PdfDownloader();   
     $pdf = $down->returnPdf($doi);
     if ($pdf == false){
         echo 'PDF not fetched';
     }
     else{
-        file_put_contents('/var/www/html/sites/default/files/pdfdloader/'.$pdf_fname, $down->getPdf());
+        $uri = file_create_filename(md5($pdf).'.pdf', 'public://pdfdloader');
+        $file = file_save_data($pdf, $uri, FILE_EXISTS_REPLACE);
+        if ($file){
+            file_usage_add($file, 'pdf_downloader', 'pubalert', 0);
+        }
     }
     
 }
