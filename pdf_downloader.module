@@ -39,3 +39,9 @@ function pdf_downloader_dload_pdf($doi = NULL, $id = 0){
     }
     
 }
+
+
+function pdf_downloader_delete($file, $id){
+    file_usage_delete($file, 'pdf_downloader', 'pubalert', $id);
+    file_delete($file);
+}
