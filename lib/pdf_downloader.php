@@ -65,7 +65,7 @@ class PdfDownloader{
             $this->locator = 'locateElsevier';   
         }
 
-        if (strpos($this->getUrl(), 'wiley.com') !== false )
+        elseif (strpos($this->getUrl(), 'wiley.com') !== false )
         {
             $this->locator = 'locateWiley';
         }
