@@ -17,7 +17,7 @@ function pdf_downloader_menu() {
 
 
 
-function pdf_downloader_dload_pdf($doi = NULL, $id = 0){
+function pdf_downloader_dload_pdf($doi = NULL){
     if (!$doi){
         $doi = trim($_GET['DOI'],'_');
     }
@@ -25,23 +25,6 @@ function pdf_downloader_dload_pdf($doi = NULL, $id = 0){
     module_load_include('php', 'pdf_downloader', 'lib/pdf_downloader');
     
     $down = new PdfDownloader();   
-    $pdf = $down->returnPdf($doi);
-    if ($pdf == false){
-        return 0;
-    }
-    else{
-        $uri = file_create_filename(md5($pdf).'.pdf', 'public://pdfdloader');
-        $file = file_save_data($pdf, $uri, FILE_EXISTS_REPLACE);
-        if ($file){
-            file_usage_add($file, 'pdf_downloader', 'pubalert', $id);
-        }
-        return 1;
-    }
-    
+    return($down->returnPdf($doi));    
 }
 
-
-function pdf_downloader_delete($file, $id){
-    file_usage_delete($file, 'pdf_downloader', 'pubalert', $id);
-    file_delete($file);
-}
