@@ -147,7 +147,7 @@ class PdfDownloader{
     private function locateWiley(){
         $turl = $this->locateMetaCitationPdfUrl();
         if ($turl){
-            return str_replace('doi/pdf', 'doi/pdfdirect', $this->getPdfUrl());
+            return str_replace('doi/pdf', 'doi/pdfdirect', $turl);
         }
         return false;
     }
