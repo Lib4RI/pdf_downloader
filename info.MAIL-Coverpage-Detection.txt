@@ -1,0 +1,95 @@
+Hello Together
+
+Thanks for reminding me this PDF download project (4 years ago).
+It will (hopefully) be now a little bit more ‘straight-forward’, although also now some human interactions will probably be required within the entire task.
+
+A former remark stated that the size of the cover page (resp. page 1) alone is only a very vague criteria.
+The publisher and looking for a preset pattern of words/terms were better criterias.
+
+For example https://pubs.rsc.org/en/content/articlelanding/2011/CC/c1cc12490k
+There is a 'Downloaded by' notation in a very low amount of words, there is also the sequnece 'View Article Online', 'Journal Homepage', 'Table of Contents for this issue'.
+This seem to be a good indication of a cover page - of course we have to re-/post-check it manually what was cut off.
+
+
+So perhaps we should proceed like this:
+1.)
+	Downloading as many PDFs a possible.
+	Per PDF storing some metadata (DORA PID, publisher, DOI, ...) in file.
+
+2.)
+	Cloning page 1 of each PDF and extracing its text
+	Manually setting up (better) patterns to identify a cover page.
+	Repeating this step until we have (per publisher probably) satisfing patterns where to cut off page 1.
+	
+3.)	
+	Cutting off an assumed cover page and uploading each PDFs to its PID into DORA.
+
+
+Some improvment of the approach may be needed, for example:
+- About 1.) - There are 46 publications with a WoS ID only, and 329 with a Scopus ID only - how/when to deal with them?
+- About 1.) - Each PDF may have metadata in its file header - drop it or maintain it?
+- About 2.) - Re-tuning patterns may become more and more painful, so a 'page-1-keep/drop' special-case-list with PIDs may be more useful.
+- About 2.) - Generally this step will be work-intensive, so big page-1-thumbnails may help (Windows-PDF-Preview may be too small/lame).
+- About 3.) - In theory all PDF-derivatives could be pre-produced for less system stress - not sure though if DORA will like 'fremd-ingested' derivatives.
+- About 3.) - If the cover page detection in 2.) has expected/known lacks, we need a last recheck/postfix here.
+
+
+WoS
+http://lib-dora-prod1.emp-eaw.ch:8080/solr/collection1/select?wt=csv&indent=true&csv.separator=|&sort=PID+asc&rows=987654321&q=PID:*%5c%3a*+AND+mods_identifier_ut_mt:*+NOT+mods_identifier_doi_mt:*+NOT+mods_identifier_scopus_mt:*+AND+mods_originInfo_encoding_w3cdtf_keyDate_yes_dateIssued_dt:[2006-01-01T00%3A00%3A00Z%20TO%202012-01-01T00%3A00%3A00Z]+NOT+(RELS_EXT_isMemberOfCollection_uri_ms:%22info%5c%3Afedora%5c/psi%5c%3Apublications%22+OR+RELS_EXT_isMemberOfCollection_uri_ms:%22info%5c%3Afedora%5c/psi%5c%3Aexternal%22+OR+RELS_EXT_isMemberOfCollection_uri_ms:%22info%5c%3Afedora%5c/wsl%5c%3Apublications%22+OR+RELS_EXT_isMemberOfCollection_uri_ms:%22info%5c%3Afedora%5c/wsl%5c%3Awsl%5c-int%22+OR+RELS_EXT_isMemberOfCollection_uri_ms:%22info%5c%3Afedora%5c/wsl%5c%3Awsl%5c-ext%22+OR+RELS_EXT_isMemberOfCollection_uri_ms:%22info%5c%3Afedora%5c/eawag%5c%3Aext%22+OR+RELS_EXT_isMemberOfCollection_uri_ms:%22info%5c%3Afedora%5c/wsl%5c%3Aforum%22)&fl=PID%2c+mods_identifier_doi_mt%2c+mods_identifier_doi_mt%2c+mods_identifier_scopus_mt%2c+mods_identifier_ut_mt%2c+mods_note_additional?information_mt
+Scopus
+http://lib-dora-prod1.emp-eaw.ch:8080/solr/collection1/select?wt=csv&indent=true&csv.separator=|&sort=PID+asc&rows=987654321&q=PID:*%5c%3a*+AND+mods_identifier_scopus_mt:*+NOT+mods_identifier_doi_mt:*+NOT+mods_identifier_ut_mt:*+AND+mods_originInfo_encoding_w3cdtf_keyDate_yes_dateIssued_dt:[2006-01-01T00%3A00%3A00Z%20TO%202012-01-01T00%3A00%3A00Z]+NOT+(RELS_EXT_isMemberOfCollection_uri_ms:%22info%5c%3Afedora%5c/psi%5c%3Apublications%22+OR+RELS_EXT_isMemberOfCollection_uri_ms:%22info%5c%3Afedora%5c/psi%5c%3Aexternal%22+OR+RELS_EXT_isMemberOfCollection_uri_ms:%22info%5c%3Afedora%5c/wsl%5c%3Apublications%22+OR+RELS_EXT_isMemberOfCollection_uri_ms:%22info%5c%3Afedora%5c/wsl%5c%3Awsl%5c-int%22+OR+RELS_EXT_isMemberOfCollection_uri_ms:%22info%5c%3Afedora%5c/wsl%5c%3Awsl%5c-ext%22+OR+RELS_EXT_isMemberOfCollection_uri_ms:%22info%5c%3Afedora%5c/eawag%5c%3Aext%22+OR+RELS_EXT_isMemberOfCollection_uri_ms:%22info%5c%3Afedora%5c/wsl%5c%3Aforum%22)&fl=PID%2c+mods_identifier_doi_mt%2c+mods_identifier_doi_mt%2c+mods_identifier_scopus_mt%2c+mods_identifier_ut_mt%2c+mods_note_additional?information_mt
+
+
+
+
+
+
+
+
+
+$identAry['CellPress']   = array( "Article", "Graphical Abstract", "Authors", "Correspondence", "In Brief", "Highlights" /* , "Accession Numbers" */  );
+$identAry['PopularPhysics']		= array( "To cite this article:", "View the article online for updates and enhancements.", "This content was downloaded from IP address" );	// "Related content"
+// ^^^^ also for Physica Scripta + 'epl' + 'Physics in Medicine & Biology'
+$identAry['RevSciInst']		= array( "Cite as:", "Submitted:", "Accepted:", "Published Online:", "~ARTICLES YOU MAY BE INTERESTED IN" );
+$identAry['JourAppPhys']	= array( "Cite as:", "Published Online:", "~ARTICLES YOU MAY BE INTERESTED IN" );		// Cite as: Journal of Applied Physics
+	$identAry['JourAppPhys2']	= array( "Cite as: Journal of Applied Physics", "Published Online:", "Journal of Applied Physics", "American Institute of Physics" );
+$identAry['ETH-Biblio']		= array( "Autor", "Objekttyp:", "PDF erstellt am:", "Persistenter Link:", "Ein Dienst der ETH-Bibliothek" );
+$identAry['WileyVCH-SI']	= array( "Supporting Information", "Copyright Wiley-VCH Verlag GmbH", "Co. KGaA, 69451 Weinheim, " );
+// $identAry['WileyVCH-CPC']	= array( "DOI:", "Wiley-VCH Verlag GmbH", "Co. KGaA, Weinheim", "ChemPhysChem" );
+$identAry['WileyGeneral']	= array( "![a]", "![*]", "!a[*]", "!a,b", "!a,*", "!b,*", "!**", "!1. Introduction", "Wiley-VCH Verlag GmbH", "Co. KGaA", "Weinheim" );		// keep after WileyVCHsi!
+$identAry['SPIEDigLib']		= array( "!1 Introduction", "Downloaded From: https://www.spiedigitallibrary.org/journals/", "Terms of Use: https://www.spiedigitallibrary.org/terms-of-use" );
+$identAry['ResearchGate']   = array( "See discussions, stats, and author profiles for this publication at", "www.researchgate.net", "~SEE PROFILE" );
+$identAry['JSTOR']          = array( "Your use of the JSTOR archive indicates your acceptance of the Terms", "This content downloaded from" );
+$identAry['Forstverein']    = array( "www.forstverein.ch", "wissenschaftliche Zeitschrift des Schweizerischen Forstvereins", "Forstwesen abonnieren" );
+$identAry['BioOne']         = array( "BioOne sees sustainable scholarly publishing as an inherently collaborative enterprise", "Downloaded From:", "bioone.org/terms-of-use" );
+$identAry['AmInstPhys']     = array( "Citation:", "View online:", "View Table of Contents:", "Published by the American Institute of Physics" );		// "Articles you may be interested in"
+$identAry['AmVaccuSoc']     = array( "Citation:", "View online:", "View Table of Contents:", "Published by the American Vacuum Society" );		// "Articles you may be interested in"
+$identAry['AddBarLow']      = array( "Citation:", "View online:", "View Table of Contents:", "Published by the", "~Articles you may be interested in" );
+$identAry['TaylorFancis']   = array( "cite this article:", "link to this article:", "Published online:", "Submit your article to this journal", "Article views:" );		// "Citing articles:"
+$identAry['www.RSC.org']   = array( "Volume", "Number", "Pages", "www.rsc.org/" );
+$identAry['www.RSC.org2']   = array( "www.rsc.org/", "Volume", "Number", "Pages" );
+$identAry['SoftMatter']		= array( "View Article Online", "Volume", "Number", "Page", "www.softmatter.org" );
+$identAry['SoftMatter2']	= array( "View Article Online", "www.softmatter.org", "Volume", "Number", "Page" );
+$identAry['PhysChChPhys']   = array( "View Article Online", "Table of Contents for this issue", "is published as part of a", "PCCP" );		// space may miss after 'a'
+$identAry['DaltonTrans']	= array( "View Article Online", "Table of Contents for this issue", "is published as part of the Dalton Trans" );
+$identAry['DaltonTrans2']   = array( "View Article Online", "Table of Contents for this issue", "Number", "Page", "www.rsc.org/dalton" );
+$identAry['ChemicalCom']   = array( "Chemical Communications", "Number", "Page", "www.rsc.org/chemcomm" );
+$identAry['ChemicalCom2']   = array( "View Article Online", "Table of Contents for th", "!*a", "!*b", "This article is part of the", "www.rsc.org/chemcomm" );
+$identAry['RoyalSocChem']   = array( "Title:", "rsc.li/catalysis", "Registered charity number" );		// "As featured in:
+$identAry['BioMedCilia']	= array( "Cilia (", "DOI" );
+$identAry['CellPress']   = array( "Article", "Graphical Abstract", "Authors", "Correspondence", "In Brief", "Highlights" /* , "Accession Numbers" */  );
+
+
+$assistAry = array();		// to hold cover-type-specific information when the cover-page is over.
+$assistAry['PhysChChPhys']['cover_end_terms'] = array( "www.rsc.org/pccp | Physical Chemistry Chemical Physics" );
+$assistAry['PhysChChPhys']['cover_end_offset'] = -1;		// 0 to consider the page where cover_end_terms are found as part of the cover.
+$assistAry['DaltonTrans']['cover_end_terms'] = array( "www.rsc.org/dalton | Dalton Transactions" );
+$assistAry['DaltonTrans']['cover_end_offset'] = -1;		// 0 to consider the page where cover_end_terms are found as part of the cover.
+$assistAry['DaltonTrans2']['cover_end_terms'] = array( "www.rsc.org/dalton | Dalton Transactions" );
+$assistAry['DaltonTrans2']['cover_end_offset'] = -1;		// 0 to consider the page where cover_end_terms are found as part of the cover.
+$assistAry['ChemicalCom']['cover_end_terms'] = array( "www.rsc.org/chemcomm | ChemComm" );
+$assistAry['ChemicalCom']['cover_end_offset'] = -1;		// 0 to consider the page where cover_end_terms are found as part of the cover.
+$assistAry['ChemicalCom2']['cover_end_terms'] = array( "www.rsc.org/chemcomm | ChemComm" );
+$assistAry['ChemicalCom2']['cover_end_offset'] = -1;		// 0 to consider the page where cover_end_terms are found as part of the cover.
+$assistAry['WileyGeneral']['req_human_check'] = true;
+$assistAry['BioMedCilia']['req_human_check'] = true;

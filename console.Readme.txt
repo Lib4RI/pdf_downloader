@@ -1,0 +1,26 @@
+
+DESCRIPTION:
+	These are php console files to check the availability to download PDF files
+	automatically form website with cUrl, Wget or PHP itself.
+
+
+REQUIREMENTS:
+	Following sub-directories/-paths must exist:
+		pdf_dl_lib/publisher-handling
+		pdf_dl_done
+		pdf_dl_test
+	These directories/paths are referenced from inside the PHP created.
+
+	The pdf_dl_lib directory will also contain the pdf_downloader.php which is
+	a 1:1 copy of from https://github.com/Lib4RI/pdf_downloader/blob/dev/lib/
+
+
+COMMENT/STATUS:
+	Most common case was to evaluate the HTML tag "<meta citation_pdf_url='...'>"
+	which however is not maintained by all publishers.
+	In the other cases 'scratching' improvisation was required to extract
+	a PDF link form the page source code, in some other case the ended up
+	with unevaluatalbe JavaScript or cookie/session matters.
+	Only for Elevier we could find an offical API access (limited so far).
+
+
