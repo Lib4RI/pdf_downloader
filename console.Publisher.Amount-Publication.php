@@ -320,7 +320,11 @@ foreach( $pxFilterAry as $_pdf_task => $pxNameAry ) {
 
 		$pxByPub = reset( $pubAry['mods_relatedItem_host_originInfo_publisher_mt'] );
 		if ( empty($pxByPub) ) { continue; }
-		$pxCountAry[$_pdf_task][$pxByPub] = @intval($pxCountAry[$_pdf_task][$pxByPub]) + 1;
+		$oaState = reset($pubAry['RELS_EXT_fullText_literal_mt']);
+		$pxCountAry[$_pdf_task][$pxByPub]['_total_'] = @intval($pxCountAry[$_pdf_task][$pxByPub]['_total_']) + 1;
+		if ( stripos($oaState,'Open') !== false ) {
+			$pxCountAry[$_pdf_task][$pxByPub]['OA'] = @intval($pxCountAry[$_pdf_task][$pxByPub]['OA']) + 1;
+		}
 
 		if ( @!isset($pxFilterAry['_all_'][strtolower($pxByPub)]) ) {
 			echo( "ERROR: '" . $pxByPub . "' is no *known* publisher!?\r\n".print_r($pubAry,1)."\r\n" );
@@ -606,6 +610,11 @@ foreach( $pxFilterAry as $_pdf_task => $pxNameAry ) {
 	}
 }
 
+foreach( $pxCountAry as $task => $tAry ) {
+	foreach( $tAry as $px => $pxAry ) {
+		$pxCountAry[$task][$px] = strval($pxAry['_total_'] . ' (incl. ' . $pxAry['OA']) . ' OA)';
+	}
+}
 echo "\r\nPublisher Overview + Publications per Publisher: " . print_r( $pxCountAry,1) . "\r\n";	
 	
 return;
