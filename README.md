@@ -4,7 +4,7 @@
 ## Introduction
 
 This repository branch is part of the task in [Redmine ticket #318](http://lib-dora-dev1.emp-eaw.ch:3000/issues/318).
-Only a portion of publications in DORA are affected by this task/ticket, please see [info.MAIL-PublicationSelection.html](./info.MAIL-PublicationSelection.html) for the corresponding Solr query.
+Only a portion of publications in DORA are affected by this task/ticket, please see [info.MAIL-PublicationSelection.pdf](./info.MAIL-PublicationSelection.pdf) for the corresponding Solr query.
 ```
 Expected cover-page status and amount of affected DORA publications per publisher:
 (
@@ -33,24 +33,23 @@ The result of this test you will find in the ['pdf_dl_test' directory](./pdf_dl_
 
 
 ## Requirements
-
 * PHP *console* environement with cUrl + Wget installed.
 * Publication data is intended to be retrieved via our [Solr web interface](http://lib-dora-prod1.emp-eaw.ch:8080/solr/).
 
 
-# License
-Not really intended to be published!(?) However if licensed then probably under [GNU General Public License v3](https://www.gnu.org/licenses/gpl-3.0.en.html)
-
-
-# Technical
+## Technical
 There is new class called 'PdfHamster', extending 'PdfDownloader' class object.
 Major features are download support with 'Wget' and PHP itself incl. random (brwoser) user-agent string (approximated or scrapped from the web to be up-to-date).
 
 
-# To Do
+## To Do
 * Publications from SPIE were handled by Sarah already! :=)
 * Bascially no 'bulk download' was set up so far, please check the ['pdf_dl_test' directory](./pdf_dl_test) there this is still possible at all.
 * IOP seems to have a sophisticated browser handling - it may be possible to download one PDF, then however they block the download approaches used here for several minutes.
 * Negitiaions with Elevier are in process (ask Dimitris). So far it was only possible to retrieve full PDFs if they were OA, othewise we just got the first page.
 * There is a severe problem to download automatically ~700 PDFs from Wiley with existing approaches. However perhaps there is possibility to do this via [Wiley's official data-mining API](https://onlinelibrary.wiley.com/library-info/resources/text-and-datamining).
 
+
+## License
+Currently not really intended to be published!(?)
+However if licensed then probably under [GNU General Public License v3](https://www.gnu.org/licenses/gpl-3.0.en.html)
